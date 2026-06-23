@@ -205,7 +205,10 @@ main() {
 	# Command line args specified. Check for directories.
 	lsix=$(realpath "$0")
 	for arg; do
-	    if [ -d "$arg" ]; then
+	    # Skip empty filenames; "" makes ImageMagick hang (see README).
+	    if [[ -z "$arg" ]]; then
+		continue
+	    elif [ -d "$arg" ]; then
 		echo Recursing on $arg
 		(cd "$arg"; $lsix)
 	    else
@@ -274,11 +277,16 @@ processlabel() {
 
 ####
 
-main "$@"
+# Run main() only when executed directly. When the script is sourced
+# (e.g., by test/lsix-test.sh) the functions above are loaded without
+# running main, so they can be exercised in isolation.
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
 
-# Send an escape sequence and wait for a response from the terminal
-# so that the program won't quit until images have finished transferring.
-read -s -t 60 -d "c" -p $'\e[c' >&2
+    # Send an escape sequence and wait for a response from the terminal
+    # so that the program won't quit until images have finished transferring.
+    read -s -t 60 -d "c" -p $'\e[c' >&2
+fi
 
 
 ######################################################################
