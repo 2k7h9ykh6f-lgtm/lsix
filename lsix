@@ -205,7 +205,10 @@ main() {
 	# Command line args specified. Check for directories.
 	lsix=$(realpath "$0")
 	for arg; do
-	    if [ -d "$arg" ]; then
+	    if [[ -z "$arg" ]]; then
+		# Skip empty filenames: passing "" to ImageMagick hangs it.
+		echo "lsix: ignoring empty filename argument" >&2
+	    elif [ -d "$arg" ]; then
 		echo Recursing on $arg
 		(cd "$arg"; $lsix)
 	    else
@@ -274,11 +277,14 @@ processlabel() {
 
 ####
 
-main "$@"
+# Only run automatically when executed, not when sourced (e.g., by tests).
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
 
-# Send an escape sequence and wait for a response from the terminal
-# so that the program won't quit until images have finished transferring.
-read -s -t 60 -d "c" -p $'\e[c' >&2
+    # Send an escape sequence and wait for a response from the terminal
+    # so that the program won't quit until images have finished transferring.
+    read -s -t 60 -d "c" -p $'\e[c' >&2
+fi
 
 
 ######################################################################
