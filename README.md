@@ -179,8 +179,8 @@ GitHub.
   freak out if you don't prepend a directory. (`lsix ./@foo.png`)
   (This is a bug in ImageMagick, not lsix).
 
-* Specifying the empty string `""` as a filename makes ImageMagick hang.
-  (This appears to be an ImageMagick bug / misfeature). 
+* Specifying the empty string `""` as a filename no longer hangs: lsix
+  skips empty arguments. (The underlying hang is an ImageMagick misfeature.)
 
 * Long filenames are wrapped, but not intelligently. Would it
   complicate this script too much to make it prefer to wrap on whites
