@@ -274,11 +274,15 @@ processlabel() {
 
 ####
 
-main "$@"
+# Only run as a program. When sourced (e.g. by the test suite) just define
+# the functions above, so they can be exercised in isolation.
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
 
-# Send an escape sequence and wait for a response from the terminal
-# so that the program won't quit until images have finished transferring.
-read -s -t 60 -d "c" -p $'\e[c' >&2
+    # Send an escape sequence and wait for a response from the terminal
+    # so that the program won't quit until images have finished transferring.
+    read -s -t 60 -d "c" -p $'\e[c' >&2
+fi
 
 
 ######################################################################
