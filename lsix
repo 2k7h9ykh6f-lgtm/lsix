@@ -205,7 +205,10 @@ main() {
 	# Command line args specified. Check for directories.
 	lsix=$(realpath "$0")
 	for arg; do
-	    if [ -d "$arg" ]; then
+	    if [ -z "$arg" ]; then
+		# Skip empty filenames: passing "file://" to ImageMagick hangs it.
+		echo "lsix: ignoring empty filename argument" >&2
+	    elif [ -d "$arg" ]; then
 		echo Recursing on $arg
 		(cd "$arg"; $lsix)
 	    else
