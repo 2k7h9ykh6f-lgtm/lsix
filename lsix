@@ -256,7 +256,7 @@ processlabel() {
     # 4. If a filename is too long, remove extension (.jpg).
     # 5. Split long filenames with newlines (recursively)
     span=15			# filenames longer than span will be split
-    echo -n "$1" |
+    printf '%s' "$1" |
 	sed 's|^:||; s|\[0]$||;' | tr '[:cntrl:]' '?' |
 	awk -v span=$span -v ORS=""  '
 	function halve(s,      l,h) {	# l and h are locals
